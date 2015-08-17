@@ -56,7 +56,7 @@ install_kegs () {
     # http://www.debian-administration.org/article/316/An_introduction_to_bash_completion_part_1
     brew install bash-completion
 
-    # Install large binaries
+    # Install large binaries http://caskroom.io/
     brew install caskroom/cask/brew-cask
 
     # Emacs dep management
