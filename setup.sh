@@ -1,10 +1,9 @@
 #!/bin/bash -e
 ################################################################################
-This script is assuming an install
-
+# This script provides a relatively automated setup of a fresh OSX machine.
+# @anthonyjso
 ################################################################################
-
-echo ''
+CODE=${HOME}/code
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
