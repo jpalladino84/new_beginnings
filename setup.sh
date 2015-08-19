@@ -162,16 +162,22 @@ function fetch_themes () {
         git@github.com:adilosa/base16-idea.git \
         git@github.com:chriskempson/base16-iterm2.git \
         git@github.com:chriskempson/base16-shell.git \
-        git@github.com:chriskempson/base16-vim.git; do
+        git@github.com:chriskempson/base16-vim.git \
+        https://github.com/anthonyjso/rig.git; do
 
         git -C $code clone $repo;
     done
     success "Third party repos installed"
 }
 
+function install_dotfiles () {
+    ln -s ${CODE}/rig/bash/bashrc ${HOME}/.bashrc
+}
+
 install_xcode_clt
 install_homebrew
 install_casks
 fetch_themes
+fetch_dotfiles
 
 #TODO: casks - Get current list of binaries
