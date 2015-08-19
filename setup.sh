@@ -123,32 +123,36 @@ install_kegs () {
 }
 
 function install_casks () {
-    brew cask install 1password
-    brew cask install adium
-    brew cask install caffeine
-    brew cask install chromecast
-    brew cask install cyberduck
-    brew cask install emacs
-    brew cask install evernote
-    brew cask install firefox
-    brew cask install flux
-    brew cask install gas-mask
-    brew cask install gitx
-    brew cask install google-chrome
-    brew cask install hostbuddy
-    brew cask install intellij-idea-ce
-    brew cask install iterm2
-    brew cask install keyboard-cleaner
-    brew cask install kindle
-    brew cask install pycharm
-    brew cask install rdio
-    brew cask install screenhero
-    brew cask install skitch
-    brew cask install slack
-    brew cask install spectacle
-    brew cask install sublime-text
-    brew cask install vagrant
-    brew cask install virtualbox
+
+    brew cask install \
+        1password \
+        adium \
+        caffeine \
+        chromecast \
+        cyberduck \
+        emacs \
+        evernote \
+        firefox \
+        flux \
+        gas-mask \
+        gitx \
+        google-chrome \
+        hostbuddy \
+        intellij-idea-ce \
+        iterm2 \
+        keyboard-cleaner \
+        kindle \
+        pycharm \
+        rdio \
+        screenhero \
+        skitch \
+        slack \
+        spectacle \
+        sublime-text \
+        vagrant \
+        virtualbox
+
+    success "Casks installed"
 
 }
 
