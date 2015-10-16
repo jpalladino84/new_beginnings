@@ -390,6 +390,36 @@ function setup_vim () {
     #pathogen
     mkdir -p ~/.vim/autoload ~/.vim/bundle && \
     curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+
+    for repo in git@github.com:vim-scripts/JavaScript-Indent.git \
+                https://github.com/rking/ag.vim \
+                git@github.com:tacahiroy/ctrlp-funky.git \
+                git@github.com:kien/ctrlp.vim.git \
+                https://github.com/Raimondi/delimitMate \
+                https://github.com/mattn/emmet-vim.git \
+                https://github.com/scrooloose/nerdtree.git \
+                https://github.com/kien/rainbow_parentheses.vim \
+                git@github.com:vim-scripts/slimv.vim.git \
+                https://github.com/scrooloose/syntastic.git \
+                https://github.com/vim-scripts/taglist.vim \
+                https://github.com/craigemery/vim-autotag \
+                https://github.com/skammer/vim-css-color.git \
+                git://github.com/tpope/vim-fugitive.git \
+                git@github.com:vitaly/vim-gitignore.git \
+                https://github.com/pangloss/vim-javascript.git \
+                https://github.com/jelera/vim-javascript-syntax.git \
+                git://github.com/tpope/vim-jdaddy.git \
+                https://github.com/heavenshell/vim-jsdoc \
+                https://github.com/mxw/vim-jsx.git \
+                https://github.com/plasticboy/vim-markdown.git \
+                git@github.com:edsono/vim-matchit.git \
+                git://github.com/tpope/vim-sensible.git \
+                git@github.com:duganchen/vim-soy.git \
+                git@github.com:tpope/vim-surround.git \
+                git@github.com:avakhov/vim-yaml.git; do
+
+        git -C ~/.vim/bundle clone $repo
+    done
 }
 
 if [ $0 != $_ ]; then
@@ -404,4 +434,3 @@ if [ $0 != $_ ]; then
     setup_osx
     setup_vim
 fi
-
