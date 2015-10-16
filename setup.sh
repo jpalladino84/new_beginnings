@@ -142,6 +142,9 @@ install_kegs () {
     # vim
     brew install macvim --with-lua --with-verride-system-vim
 
+    # jenv
+    brew install jenv
+
     success "Homebrew kegs installed"
 }
 
@@ -163,6 +166,7 @@ function install_casks () {
         hostbuddy \
         intellij-idea-ce \
         iterm2 \
+        java \
         keyboard-cleaner \
         kindle \
         mysqlworkbench \
@@ -188,11 +192,189 @@ function fetch_themes () {
         https://github.com/chriskempson/base16-shell.git \
         https://github.com/chriskempson/base16-vim.git \
         https://github.com/anthonyjso/rig.git; do
-       
-        repo_dir=$(echo ${repo} | sed 's#.*/\(.*\).git$#\1#g') 
+
+        repo_dir=$(echo ${repo} | sed 's#.*/\(.*\).git$#\1#g')
         [ -d ${CODE}/${repo_dir} ] || git -C $CODE clone $repo;
     done
     success "Third party repos installed"
+}
+
+function setup_osx () {
+
+    info "Configuring OSX"
+
+    # UI/UX
+
+    # Reveal IP address, hostname, OS version, etc. when clicking the clock
+    # in the login window
+    sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+
+    # Check for software updates daily, not just once per week
+    defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+
+    # Disable smart quotes as they’re annoying when typing code
+    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+
+    # Disable smart dashes as they’re annoying when typing code
+    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+
+    # Menu bar: hide the Time Machine and User icons
+    for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
+        defaults write "${domain}" dontAutoLoad -array \
+            "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+            "/System/Library/CoreServices/Menu Extras/User.menu"
+    done
+
+    defaults write com.apple.systemuiserver menuExtras -array \
+        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
+        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
+        "/System/Library/CoreServices/Menu Extras/Clock.menu"
+
+    # Expand save panel by default
+    defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+    defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+    # Expand print panel by default
+    defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+    defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+
+    # Trackpad, mouse, keyboard, Bluetooth accessories, and input
+
+    # Trackpad: enable tap to click for this user and for the login screen
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+    defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+    defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+    # Trackpad: map bottom right corner to right-click
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+    defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
+    defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
+
+    # Disable “natural” (Lion-style) scrolling
+    defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+
+    # Enable full keyboard access for all controls
+    # (e.g. enable Tab in modal dialogs)
+    defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+
+    # Disable press-and-hold for keys in favor of key repeat
+    defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+
+    # Set a blazingly fast keyboard repeat rate
+    defaults write NSGlobalDomain KeyRepeat -int 0
+
+    # Screen
+
+    # Require password immediately after sleep or screen saver begins
+    defaults write com.apple.screensaver askForPassword -int 1
+    defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+    # Save screenshots to the desktop
+    mkdir -p "${HOME}/Desktop/screenshots"
+    defaults write com.apple.screencapture location -string "${HOME}/Desktop/screenshots"
+
+    # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
+    defaults write com.apple.screencapture type -string "png"
+
+    # Dock, Dashboard, and hot corners
+
+    # Enable highlight hover effect for the grid view of a stack (Dock)
+    defaults write com.apple.dock mouse-over-hilite-stack -bool true
+
+    # Set the icon size of Dock items to 36 pixels
+    defaults write com.apple.dock tilesize -int 36
+
+    # Change minimize/maximize window effect
+    defaults write com.apple.dock mineffect -string "scale"
+
+    # Minimize windows into their application’s icon
+    defaults write com.apple.dock minimize-to-application -bool true
+
+    # Enable spring loading for all Dock items
+    defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
+
+    # Show indicator lights for open applications in the Dock
+    defaults write com.apple.dock show-process-indicators -bool true
+
+    # Wipe all (default) app icons from the Dock
+    # This is only really useful when setting up a new Mac, or if you don’t use
+    # the Dock to launch apps.
+    #defaults write com.apple.dock persistent-apps -array
+
+    # Don’t animate opening applications from the Dock
+    defaults write com.apple.dock launchanim -bool false
+
+    # Speed up Mission Control animations
+    defaults write com.apple.dock expose-animation-duration -float 0.1
+
+    # Disable Dashboard
+    defaults write com.apple.dashboard mcx-disabled -bool true
+
+    # Don’t show Dashboard as a Space
+    defaults write com.apple.dock dashboard-in-overlay -bool true
+
+    # Don’t automatically rearrange Spaces based on most recent use
+    defaults write com.apple.dock mru-spaces -bool false
+
+    # Remove the auto-hiding Dock delay
+    defaults write com.apple.dock autohide-delay -float 0
+    # Remove the animation when hiding/showing the Dock
+    defaults write com.apple.dock autohide-time-modifier -float 0
+
+    # Automatically hide and show the Dock
+    defaults write com.apple.dock autohide -bool true
+
+    # Make Dock icons of hidden applications translucent
+    defaults write com.apple.dock showhidden -bool true
+
+    # Disable the Launchpad gesture (pinch with thumb and three fingers)
+    #defaults write com.apple.dock showLaunchpadGestureEnabled -int 0
+
+    # Reset Launchpad, but keep the desktop wallpaper intact
+    # find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
+
+    # Add iOS Simulator to Launchpad
+    sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/iOS Simulator.app" "/Applications/iOS Simulator.app"
+
+    # Add a spacer to the left side of the Dock (where the applications are)
+    #defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type="spacer-tile";}'
+    # Add a spacer to the right side of the Dock (where the Trash is)
+    #defaults write com.apple.dock persistent-others -array-add '{tile-data={}; tile-type="spacer-tile";}'
+
+    # Hot corners
+    # Possible values:
+    #  0: no-op
+    #  2: Mission Control
+    #  3: Show application windows
+    #  4: Desktop
+    #  5: Start screen saver
+    #  6: Disable screen saver
+    #  7: Dashboard
+    # 10: Put display to sleep
+    # 11: Launchpad
+    # 12: Notification Center
+    # Top left screen corner → Mission Control
+    defaults write com.apple.dock wvous-tl-corner -int 4
+    defaults write com.apple.dock wvous-tl-modifier -int 0
+    # Top right screen corner → Desktop
+    defaults write com.apple.dock wvous-tr-corner -int 3
+    defaults write com.apple.dock wvous-tr-modifier -int 0
+    # Bottom left screen corner → Start screen saver
+    defaults write com.apple.dock wvous-bl-corner -int 5
+    defaults write com.apple.dock wvous-bl-modifier -int 0
+
+    # Termina/iterm2
+
+    # Install the Solarized Dark theme for iTerm
+    # TODO: install themes...
+    # open "${HOME}/init/Solarized Dark.itermcolors"
+
+    # Don’t display the annoying prompt when quitting iTerm
+    defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+
+    info "Finished configuring OSX"
 }
 
 function install_dotfiles () {
@@ -204,6 +386,12 @@ function install_work () {
     echo 'install work'
 }
 
+function setup_vim () {
+    #pathogen
+    mkdir -p ~/.vim/autoload ~/.vim/bundle && \
+    curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+}
+
 if [ $0 != $_ ]; then
     prereqs
     install_xcode_clt
@@ -213,5 +401,7 @@ if [ $0 != $_ ]; then
     fetch_themes
     install_dotfiles
     install_work
+    setup_osx
+    setup_vim
 fi
 

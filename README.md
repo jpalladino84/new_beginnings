@@ -7,6 +7,10 @@ TODO:
 ssh-add key to new machine
 include gitconfigure to use personal e-mail address and add to "rig" repo
 copy gitignore global to rig and install in correct space
+https://github.com/jmespath/jmespath.terminal
+jenv setup
+awscli setup
+
 
 
 include splitting out of work stuff...put into S3 bucket or private repo
