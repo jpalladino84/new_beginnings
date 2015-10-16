@@ -4,13 +4,16 @@
 # @anthonyjso
 ################################################################################
 CODE=${HOME}/code
+[ ! -d $CODE ] && mkdir $CODE
+
+trap 'echo "Error at $LINENO";' ERR
 
 info () {
-  printf "  [ \033[00;34m..\033[0m ] $1"
+  printf "  [ \033[00;34m..\033[0m ] $1\n"
 }
 
 user () {
-  printf "\r  [ \033[0;33m?\033[0m ] $1 "
+  printf "\r  [ \033[0;33m?\033[0m ] $1\n"
 }
 
 success () {
@@ -20,7 +23,14 @@ success () {
 fail () {
   printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
   echo ''
-  exit
+  exit 1
+}
+
+# SSH keys required to access Git repos, etc
+prereqs () {
+    [ $(find ~/.ssh | wc -l) -gt 0 ] || fail "SSH keys required."
+    ssh-add ~/.ssh/id_rsa
+
 }
 
 # Install xcode command line tools.
@@ -44,7 +54,8 @@ install_xcode_clt () {
 install_homebrew () {
     if [ ! $(which brew) ]; then
         # This can be automated to just untar the tarball and symlink the bin
-        ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
     fi
     success "Homebrew installed"
 }
@@ -110,7 +121,8 @@ install_kegs () {
     brew install unrar
 
     # For those C explorations
-    brew install valgrind
+    brew install --HEAD valgrind
+
 
     # Required by coreutils
     brew install xz
@@ -118,6 +130,17 @@ install_kegs () {
     # vs curl -O
     brew install wget
 
+    # ctags
+    brew install ctags-exuberant
+
+    # dependencies
+    brew install gdbm gmp libevent libyaml oniguruma
+
+    # node...
+    brew install npm
+
+    # vim
+    brew install macvim --with-lua --with-verride-system-vim
 
     success "Homebrew kegs installed"
 }
@@ -142,6 +165,7 @@ function install_casks () {
         iterm2 \
         keyboard-cleaner \
         kindle \
+        mysqlworkbench \
         pycharm \
         rdio \
         screenhero \
@@ -159,25 +183,35 @@ function install_casks () {
 function fetch_themes () {
 
     for repo in git@github.com:neil477/base16-emacs.git \
-        git@github.com:adilosa/base16-idea.git \
-        git@github.com:chriskempson/base16-iterm2.git \
-        git@github.com:chriskempson/base16-shell.git \
-        git@github.com:chriskempson/base16-vim.git \
+        https://github.com/adilosa/base16-idea.git \
+        https://github.com/chriskempson/base16-iterm2.git \
+        https://github.com/chriskempson/base16-shell.git \
+        https://github.com/chriskempson/base16-vim.git \
         https://github.com/anthonyjso/rig.git; do
-
-        git -C $code clone $repo;
+       
+        repo_dir=$(echo ${repo} | sed 's#.*/\(.*\).git$#\1#g') 
+        [ -d ${CODE}/${repo_dir} ] || git -C $CODE clone $repo;
     done
     success "Third party repos installed"
 }
 
 function install_dotfiles () {
-    ln -s ${CODE}/rig/bash/bashrc ${HOME}/.bashrc
+    [ -h ${HOME}/.bashrc ] || ln -s ${CODE}/rig/bash/bashrc ${HOME}/.bashrc
 }
 
-install_xcode_clt
-install_homebrew
-install_casks
-fetch_themes
-fetch_dotfiles
+function install_work () {
+    # idea being to have work specific script sourced and executed here
+    echo 'install work'
+}
 
-#TODO: casks - Get current list of binaries
+if [ $0 != $_ ]; then
+    prereqs
+    install_xcode_clt
+    install_homebrew
+    install_kegs
+    install_casks
+    fetch_themes
+    install_dotfiles
+    install_work
+fi
+
