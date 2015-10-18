@@ -252,9 +252,6 @@ function setup_osx () {
     defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
     defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
 
-    # Disable “natural” (Lion-style) scrolling
-    defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
-
     # Enable full keyboard access for all controls
     # (e.g. enable Tab in modal dialogs)
     defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
@@ -301,7 +298,7 @@ function setup_osx () {
     # Wipe all (default) app icons from the Dock
     # This is only really useful when setting up a new Mac, or if you don’t use
     # the Dock to launch apps.
-    #defaults write com.apple.dock persistent-apps -array
+    defaults write com.apple.dock persistent-apps -array
 
     # Don’t animate opening applications from the Dock
     defaults write com.apple.dock launchanim -bool false
@@ -373,6 +370,9 @@ function setup_osx () {
 
     # Don’t display the annoying prompt when quitting iTerm
     defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+
+    # potentially kill processes to allow settings to take effect
+    # like dock and finder...
 
     info "Finished configuring OSX"
 }
