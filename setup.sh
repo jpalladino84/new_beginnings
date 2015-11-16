@@ -145,6 +145,9 @@ install_kegs () {
     # jenv
     brew install jenv
 
+    # ruby and rbenv
+    brew install rbenv ruby-build
+
     success "Homebrew kegs installed"
 }
 
@@ -182,6 +185,11 @@ function install_casks () {
 
     success "Casks installed"
 
+}
+
+function setup_python () {
+    mkdir ~/${CODE}/venv
+    pip install virtualenv virtualenvwrapper
 }
 
 function fetch_themes () {
@@ -428,6 +436,7 @@ if [ $0 != $_ ]; then
     install_homebrew
     install_kegs
     install_casks
+    setup_python
     fetch_themes
     install_dotfiles
     install_work
