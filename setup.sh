@@ -388,6 +388,7 @@ function setup_osx () {
 
 function install_dotfiles () {
     [ -h ${HOME}/.bashrc ] || ln -s ${DIR}/bash/bashrc ${HOME}/.bashrc
+    [ -h ${HOME}/.vimrc ] || ln -s ${DIR}/vim/vimrc ${HOME}/.vimrc
 }
 
 function install_work () {
