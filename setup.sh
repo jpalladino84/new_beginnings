@@ -270,6 +270,9 @@ function setup_osx () {
     # Set a blazingly fast keyboard repeat rate
     defaults write NSGlobalDomain KeyRepeat -int 0
 
+    # Use F keys as standard keys...requires reboot :/
+    defaults write -g com.apple.keyboard.fnState -boolean true
+
     # Screen
 
     # Require password immediately after sleep or screen saver begins
