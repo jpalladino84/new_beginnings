@@ -5,6 +5,7 @@
 ################################################################################
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo ${DIR}
 CODE=${HOME}/code
 
 [ ! -d $CODE ] && mkdir $CODE
@@ -158,7 +159,7 @@ function install_casks () {
 
     # From app store
     # evernote, clamxav, google-chrome, 1Password
-    # Manually: little-snitch, alfred
+    # Manually: little-snitch, alfred, pycharm pro
 
 
     brew cask install --appdir="/Applications" \
@@ -168,7 +169,7 @@ function install_casks () {
         firefox \
         flux \
         gas-mask \
-        github \
+        github-desktop \
         hostbuddy \
         intellij-idea-ce \
         iterm2 \
@@ -176,7 +177,6 @@ function install_casks () {
         keyboard-cleaner \
         kindle \
         mysqlworkbench \
-        pycharm-pro \
         screenhero \
         skitch \
         spectacle \
@@ -189,8 +189,10 @@ function install_casks () {
 }
 
 function setup_python () {
-    mkdir ~/${CODE}/venv
+    [ -d ${CODE}/venv ] || mkdir ${CODE}/venv
     pip install virtualenv virtualenvwrapper
+
+    success "Setup Python virtual environments"
 }
 
 function fetch_themes () {
@@ -199,6 +201,7 @@ function fetch_themes () {
         https://github.com/adilosa/base16-idea.git \
         https://github.com/chriskempson/base16-iterm2.git \
         https://github.com/chriskempson/base16-shell.git \
+        https://github.com/chriskempson/vim-tomorrow-theme.git \
         https://github.com/chriskempson/base16-vim.git; do
 
         repo_dir=$(echo ${repo} | sed 's#.*/\(.*\).git$#\1#g')
@@ -385,17 +388,18 @@ function setup_osx () {
     # potentially kill processes to allow settings to take effect
     # like dock and finder...
 
-    info "Finished configuring OSX"
+    success "Finished configuring OSX"
 }
 
 function install_dotfiles () {
     [ -h ${HOME}/.bashrc ] || ln -s ${DIR}/bash/bashrc ${HOME}/.bashrc
     [ -h ${HOME}/.vimrc ] || ln -s ${DIR}/vim/vimrc ${HOME}/.vimrc
+    success "Installed dotfiles"
 }
 
 function install_work () {
     # idea being to have work specific script sourced and executed here
-    echo 'install work'
+    info 'install work'
 }
 
 function setup_vim () {
@@ -431,6 +435,15 @@ function setup_vim () {
                 git@github.com:avakhov/vim-yaml.git; do
 
         git -C ~/.vim/bundle clone ${repo}
+    done
+
+    # Symlink themes
+    [ -d ${HOME}/.vim/colors ] || mkdir ${HOME}/.vim/colors
+    for theme_repo in ${CODE}/vim-tomorrow-theme \
+                 ${CODE}/base16-vim; do
+        for theme in ${theme_repo}/colors/*; do
+            ln -s ${theme} ~/.vim/colors/$(basename ${theme})
+        done
     done
 }
 
