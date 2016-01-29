@@ -79,7 +79,7 @@ install_kegs () {
     brew install coreutils
 
     # Tried and gave up and will try again
-    brew install emacs
+    brew install emacs --with-cocoa
 
     # ascii art
     brew install figlet
@@ -156,30 +156,28 @@ install_kegs () {
 
 function install_casks () {
 
-    brew cask install \
-        1password \
+    # From app store
+    # evernote, clamxav, google-chrome, 1Password
+
+    brew cask install --appdir="/Applications" \
         caffeine \
         chromecast \
         cyberduck \
-        emacs \
-        evernote \
         firefox \
         flux \
         gas-mask \
-        gitx \
-        google-chrome \
+        github \
         hostbuddy \
         intellij-idea-ce \
         iterm2 \
         java \
         keyboard-cleaner \
         kindle \
+        little-snitch \
         mysqlworkbench \
-        pycharm \
-        rdio \
+        pycharm-pro \
         screenhero \
         skitch \
-        slack \
         spectacle \
         sublime-text \
         vagrant \
@@ -200,7 +198,7 @@ function fetch_themes () {
         https://github.com/adilosa/base16-idea.git \
         https://github.com/chriskempson/base16-iterm2.git \
         https://github.com/chriskempson/base16-shell.git \
-        https://github.com/chriskempson/base16-vim.git
+        https://github.com/chriskempson/base16-vim.git; do
 
         repo_dir=$(echo ${repo} | sed 's#.*/\(.*\).git$#\1#g')
         [ -d ${CODE}/${repo_dir} ] || git -C $CODE clone $repo;
