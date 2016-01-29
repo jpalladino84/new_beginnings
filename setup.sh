@@ -271,8 +271,8 @@ function setup_osx () {
     defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
     # Set a blazingly fast keyboard repeat rate
-    defaults write NSGlobalDomain InitialKeyRepeat -int 0 # normal minimum is 15 (225 ms)
-    defaults write NSGlobalDomain KeyRepeat -int 0
+    defaults write NSGlobalDomain InitialKeyRepeat -int 10 # normal minimum is 15 (225 ms)
+    defaults write NSGlobalDomain KeyRepeat -int 1
 
     # Use F keys as standard keys...requires reboot :/
     defaults write -g com.apple.keyboard.fnState -boolean true
