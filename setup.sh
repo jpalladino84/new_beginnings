@@ -158,6 +158,8 @@ function install_casks () {
 
     # From app store
     # evernote, clamxav, google-chrome, 1Password
+    # Manually: little-snitch, alfred
+
 
     brew cask install --appdir="/Applications" \
         caffeine \
@@ -173,7 +175,6 @@ function install_casks () {
         java \
         keyboard-cleaner \
         kindle \
-        little-snitch \
         mysqlworkbench \
         pycharm-pro \
         screenhero \
