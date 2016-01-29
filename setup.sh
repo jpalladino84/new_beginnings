@@ -5,10 +5,9 @@
 ################################################################################
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-echo ${DIR}
 CODE=${HOME}/code
 
-[ ! -d $CODE ] && mkdir $CODE
+mkdir -p ${CODE}
 
 trap 'echo "Error at $LINENO";' ERR
 
@@ -32,8 +31,10 @@ fail () {
 
 # SSH keys required to access Git repos, etc
 prereqs () {
+
     [ $(find ~/.ssh | wc -l) -gt 0 ] || fail "SSH keys required."
-    ssh-add ~/.ssh/id_rsa
+    key_installed=$(ssh-add -L | grep id_rsa)
+    [ $? ] || ssh-add -K ~/.ssh/id_rsa
 
 }
 
@@ -58,8 +59,7 @@ install_xcode_clt () {
 install_homebrew () {
     if [ ! $(which brew) ]; then
         # This can be automated to just untar the tarball and symlink the bin
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
+        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
     success "Homebrew installed"
 }
@@ -189,7 +189,7 @@ function install_casks () {
 }
 
 function setup_python () {
-    [ -d ${CODE}/venv ] || mkdir ${CODE}/venv
+    mkdir -p ${CODE}/venv
     pip install virtualenv virtualenvwrapper
 
     success "Setup Python virtual environments"
@@ -271,6 +271,7 @@ function setup_osx () {
     defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
     # Set a blazingly fast keyboard repeat rate
+    defaults write NSGlobalDomain InitialKeyRepeat -int 0 # normal minimum is 15 (225 ms)
     defaults write NSGlobalDomain KeyRepeat -int 0
 
     # Use F keys as standard keys...requires reboot :/
@@ -346,9 +347,6 @@ function setup_osx () {
     # Reset Launchpad, but keep the desktop wallpaper intact
     # find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
 
-    # Add iOS Simulator to Launchpad
-    sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/iOS Simulator.app" "/Applications/iOS Simulator.app"
-
     # Add a spacer to the left side of the Dock (where the applications are)
     #defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type="spacer-tile";}'
     # Add a spacer to the right side of the Dock (where the Trash is)
@@ -407,42 +405,47 @@ function setup_vim () {
     mkdir -p ~/.vim/autoload ~/.vim/bundle && \
     curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 
-    for repo in git@github.com:vim-scripts/JavaScript-Indent.git \
-                https://github.com/rking/ag.vim \
+
+    for repo in git@github.com:othree/yajs.vim.git \
+                git@github.com:rking/ag.vim.git \
                 git@github.com:tacahiroy/ctrlp-funky.git \
                 git@github.com:kien/ctrlp.vim.git \
-                https://github.com/Raimondi/delimitMate \
-                https://github.com/mattn/emmet-vim.git \
-                https://github.com/scrooloose/nerdtree.git \
-                https://github.com/kien/rainbow_parentheses.vim \
+                git@github.com:Raimondi/delimitMate.git \
+                git@github.com:mattn/emmet-vim.git \
+                git@github.com:scrooloose/nerdtree.git \
+                git@github.com:kien/rainbow_parentheses.vim.git \
                 git@github.com:vim-scripts/slimv.vim.git \
-                https://github.com/scrooloose/syntastic.git \
-                https://github.com/vim-scripts/taglist.vim \
-                https://github.com/craigemery/vim-autotag \
-                https://github.com/skammer/vim-css-color.git \
-                git://github.com/tpope/vim-fugitive.git \
+                git@github.com:scrooloose/syntastic.git \
+                git@github.com:vim-scripts/taglist.vim.git \
+                git@github.com:craigemery/vim-autotag.git \
+                git@github.com:skammer/vim-css-color.git \
+                git@github.com:tpope/vim-fugitive.git \
                 git@github.com:vitaly/vim-gitignore.git \
-                https://github.com/pangloss/vim-javascript.git \
-                https://github.com/jelera/vim-javascript-syntax.git \
-                git://github.com/tpope/vim-jdaddy.git \
-                https://github.com/heavenshell/vim-jsdoc \
-                https://github.com/mxw/vim-jsx.git \
-                https://github.com/plasticboy/vim-markdown.git \
+                git@github.com:pangloss/vim-javascript.git \
+                git@github.com:jelera/vim-javascript-syntax.git \
+                git@github.com:tpope/vim-jdaddy.git \
+                git@github.com:heavenshell/vim-jsdoc.git \
+                git@github.com:mxw/vim-jsx.git \
+                git@github.com:plasticboy/vim-markdown.git \
                 git@github.com:edsono/vim-matchit.git \
-                git://github.com/tpope/vim-sensible.git \
+                git@github.com:tpope/vim-sensible.git \
                 git@github.com:duganchen/vim-soy.git \
                 git@github.com:tpope/vim-surround.git \
                 git@github.com:avakhov/vim-yaml.git; do
 
-        git -C ~/.vim/bundle clone ${repo}
+        # only clone the plugin if it doesn't exist yet
+        plugin_dir=$(echo ${repo} |cut -d '/' -f2)
+        plugin_dir=${plugin_dir%.git}
+        [ -d ~/.vim/bundle/${plugin_dir} ] || git -C ~/.vim/bundle clone ${repo}
     done
 
     # Symlink themes
-    [ -d ${HOME}/.vim/colors ] || mkdir ${HOME}/.vim/colors
+    mkdir -p ${HOME}/.vim/colors
     for theme_repo in ${CODE}/vim-tomorrow-theme \
                  ${CODE}/base16-vim; do
         for theme in ${theme_repo}/colors/*; do
-            ln -s ${theme} ~/.vim/colors/$(basename ${theme})
+            link_name=~/.vim/colors/$(basename ${theme})
+            [ -L ${link_name} ] || ln -s ${theme} ${link_name}
         done
     done
 }
