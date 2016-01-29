@@ -3,7 +3,10 @@
 # This script provides a relatively automated setup of a fresh OSX machine.
 # @anthonyjso
 ################################################################################
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CODE=${HOME}/code
+
 [ ! -d $CODE ] && mkdir $CODE
 
 trap 'echo "Error at $LINENO";' ERR
@@ -140,7 +143,7 @@ install_kegs () {
     brew install npm
 
     # vim
-    brew install macvim --with-lua --with-verride-system-vim
+    brew install macvim --with-lua --with-override-system-vim
 
     # jenv
     brew install jenv
@@ -155,7 +158,6 @@ function install_casks () {
 
     brew cask install \
         1password \
-        adium \
         caffeine \
         chromecast \
         cyberduck \
@@ -198,8 +200,7 @@ function fetch_themes () {
         https://github.com/adilosa/base16-idea.git \
         https://github.com/chriskempson/base16-iterm2.git \
         https://github.com/chriskempson/base16-shell.git \
-        https://github.com/chriskempson/base16-vim.git \
-        https://github.com/anthonyjso/rig.git; do
+        https://github.com/chriskempson/base16-vim.git
 
         repo_dir=$(echo ${repo} | sed 's#.*/\(.*\).git$#\1#g')
         [ -d ${CODE}/${repo_dir} ] || git -C $CODE clone $repo;
@@ -386,7 +387,7 @@ function setup_osx () {
 }
 
 function install_dotfiles () {
-    [ -h ${HOME}/.bashrc ] || ln -s ${CODE}/rig/bash/bashrc ${HOME}/.bashrc
+    [ -h ${HOME}/.bashrc ] || ln -s ${DIR}/bash/bashrc ${HOME}/.bashrc
 }
 
 function install_work () {
@@ -426,7 +427,7 @@ function setup_vim () {
                 git@github.com:tpope/vim-surround.git \
                 git@github.com:avakhov/vim-yaml.git; do
 
-        git -C ~/.vim/bundle clone $repo
+        git -C ~/.vim/bundle clone ${repo}
     done
 }
 
