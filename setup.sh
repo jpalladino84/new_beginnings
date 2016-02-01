@@ -79,17 +79,11 @@ install_kegs () {
     # Linux vs BSD
     brew install coreutils
 
-    # Tried and gave up and will try again
-    brew install emacs --with-cocoa
-
     # ascii art
     brew install figlet
 
     # no looking back at SVN
     brew install git
-
-    # Eventually I'll sit down and write something with it
-    brew install go
 
     # Nicer top
     brew install htop-osx
@@ -143,9 +137,6 @@ install_kegs () {
     # node...
     brew install npm
 
-    # vim
-    brew install macvim --with-lua --with-override-system-vim
-
     # jenv
     brew install jenv
 
@@ -164,19 +155,13 @@ function install_casks () {
 
     brew cask install --appdir="/Applications" \
         caffeine \
-        chromecast \
         cyberduck \
         firefox \
         flux \
         gas-mask \
-        github-desktop \
-        hostbuddy \
-        intellij-idea-ce \
         iterm2 \
-        java \
         keyboard-cleaner \
         kindle \
-        mysqlworkbench \
         screenhero \
         skitch \
         spectacle \

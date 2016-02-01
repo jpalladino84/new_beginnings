@@ -1,5 +1,58 @@
-# Source the interactive config file since in iTerm, each new tab is a login
-# shell.
-if [ -f ~/.bashrc ]; then
-       source ~/.bashrc
+
+function awsenv() {
+    export AWS_DEFAULT_PROFILE=$1
+    export AWS_PROFILE=$1
+}
+awsenv dev
+
+# Setup for Monetate script
+export DEVBOX=dev-jpalladino-1.monetate.org
+source ~/git/monetate-frontend/frontend/tools/bash/deployment.bash
+
+alias gpmm="git pull monetate master"
+alias gcom="git co master"
+alias copr="./frontend/bin/github.py track"
+alias mf="cd ~/git/monetate-frontend"
+alias ms="cd ~/git/monetate-server"
+alias dax="./frontend/bin/diff_active.py --user=jpalladino@monetate.com"
+alias diffactive=". ~/git/monetate-frontend/frontend/bin/diff_active.py"
+alias buildirx=". ~/bin/build-irx-scripts.sh"
+alias error-report="check && check-deps && git b-jslint"
+alias jv="cd ~/Sites/Jarvis/cloud/openshift/jarvis"
+alias tmux="TERM=screen-256color-bce tmux"
+alias workoff="deactivate"
+complete -F __monetate_script_completion diffactive
+
+export PATH=$HOME/bin:$PATH
+export PATH=$HOME/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH
+export CLICOLOR=1
+
+export LSCOLORS=GxFxCxDxBxegedabagaced
+
+if [ -f `brew --prefix`/etc/bash_completion ]; then
+    . `brew --prefix`/etc/bash_completion
 fi
+
+BLACK=$(tput setaf 0)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+LIME_YELLOW=$(tput setaf 190)
+POWDER_BLUE=$(tput setaf 153)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+WHITE=$(tput setaf 7)
+BRIGHT=$(tput bold)
+NORMAL=$(tput sgr0)
+BLINK=$(tput blink)
+REVERSE=$(tput smso)
+UNDERLINE=$(tput smul)
+
+GIT_PS1_SHOWCOLORHINTS=1
+GIT_PS1_SHOWUPSTREAM="verbose"
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
+
+export PS1="\[${YELLOW}\w\]\[${GREEN}\$(__git_ps1)\] \[\n\] \[${YELLOW}\$\] \[${NORMAL} \]"
