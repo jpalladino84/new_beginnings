@@ -1,0 +1,83 @@
+[alias]
+    co = checkout
+	ci = commit
+	br = branch
+	st = status
+
+    # Show a log of all commits with any pertinent files listed below each
+    # commit.
+    lo = "log --name-only --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+    # Creates a new branch and checks it out.
+    b-co = checkout -b
+
+    # Remove the specified local branch.
+    b-rm = branch --delete
+
+    # Remove the specified remote branch.
+    rb-rm = push --delete origin
+
+    # A diff showing what has been added or taken away in this branch in
+    # comparison to what is in master.
+    b-diff = "! git diff 'HEAD~'$(git log HEAD ^master --oneline | wc -l | tr -d ' ') --color"
+
+    # Show a log of all commits found in this branch but not in master.
+    b-log = log master..HEAD --color --name-only
+
+    # Rebase this branch, allowing for all commits added in this branch to be
+    # modified.
+    b-rebase = "! git rebase -i 'HEAD~'$(git log HEAD ^master --oneline | wc -l | tr -d ' ')"
+
+    # Opens a new window in Sublime Text 2 with all the files that have been
+    # modified in this branch.
+    b-subl = "! cd $(git rev-parse --show-toplevel) && /Users/JeffP/bin/subl --command close_all && /Users/JeffP/bin/subl $(git b-diff --name-status | awk '/^[^D][ \t]+(.+)/ {print $2}')"
+    
+    # Opens a new window in Vim  with all the files that have been
+    # modified in this branch.
+    b-vim = "! cd $(git rev-parse --show-toplevel) && vim -p $(git b-diff --name-status | awk '/^[^D][ \t]+(.+)/ {print $2}')"
+
+    # Runs gjslint on all files modified in this branch.
+    b-jslint = "! cd $(git rev-parse --show-toplevel) && gjslint $(git b-diff --name-status | grep '\\.js$' | awk '/^[^D][ \t]+(.+)/ {print $2}')"
+
+    # Simply prints out a list of the files that were added or modified.
+    b-files = "! topdir=$(git rev-parse --show-toplevel)/ && files=$(git b-diff --name-status | awk -v d=$topdir '/^[^D][ \t]+(.+)/ {print d $2}') && echo $files"
+
+        # Checkout a pull request:  git co-pr {pr_number} [{optional_new_branch}]
+    co-pr = "! git fetch monetate $(echo refs/pull/$1/head) && git checkout FETCH_HEAD && test $# -eq 2 && git checkout -b $2 && test && "
+
+    # Checkout a remote branch:  git co-rb {remote_name} {branch_name} [new_branch_name]
+    co-rb = "! git fetch $1 $2 && git checkout -b $([ $# -eq 3 ] && echo $3 || echo $2) FETCH_HEAD && test && "
+[user]
+	name = Jeff Palladino
+	email = jpalladino@monetate.com
+[color]
+	ui = true
+	branch = auto
+	diff = auto
+	status = auto
+	interactive = auto
+[push]
+	default = upstream
+[core]
+	editor = subl --wait
+	excludesfile = /Users/JeffP/Sites/pebble-api/pebble-api-node/.gitignore
+	pager = less -R
+[credential]
+	helper = osxkeychain
+
+[color]
+    ui = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+

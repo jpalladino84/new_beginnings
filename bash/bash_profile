@@ -1,3 +1,6 @@
+# . $HOME/git/monetate-server/deployment/iam/awsenv.sh
+# awsenv dev
+#export AWS_CREDENTIAL_FILE=$HOME/.aws/credentials/dev-jpalladino/cred-jpalladino.txt
 
 function awsenv() {
     export AWS_DEFAULT_PROFILE=$1
@@ -7,6 +10,8 @@ awsenv dev
 
 # Setup for Monetate script
 export DEVBOX=dev-jpalladino-1.monetate.org
+export PATH=~/Sites/Jarvis/bin:$PATH
+export PATH=~/Sites/pebble-dev/PebbleSDK-3.6.2/bin:$PATH
 source ~/git/monetate-frontend/frontend/tools/bash/deployment.bash
 
 alias gpmm="git pull monetate master"
@@ -56,3 +61,6 @@ GIT_PS1_SHOWSTASHSTATE=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
 
 export PS1="\[${YELLOW}\w\]\[${GREEN}\$(__git_ps1)\] \[\n\] \[${YELLOW}\$\] \[${NORMAL} \]"
+
+# added by Anaconda3 2.4.1 installer
+export PATH="/Users/JeffP/anaconda/bin:$PATH"

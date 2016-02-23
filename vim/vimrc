@@ -87,6 +87,9 @@ command W w !sudo tee % > /dev/null
 " Show line numbers
 set number
 
+" Share system clipboard
+set clipboard=unnamed
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

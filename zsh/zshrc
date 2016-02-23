@@ -55,6 +55,15 @@ plugins=(git osx)
 function awsenv() {
     export AWS_DEFAULT_PROFILE=$1
     export AWS_PROFILE=$1
+    export AWS_DEFAULT_REGION=us-east-1
+}
+
+function condaenv() {
+    export PATH=~/anaconda/bin:$PATH
+}
+
+function workon() {
+    . ~/venv/$1/bin/activate || echo "no such environment"
 }
 
 # Setup for Monetate script
@@ -77,6 +86,12 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
+GIT_PS1_SHOWCOLORHINTS=1
+GIT_PS1_SHOWUPSTREAM="verbose"
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
+
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
@@ -93,6 +108,8 @@ alias gcom="git co master"
 alias copr="./frontend/bin/github.py track"
 alias mf="cd ~/git/monetate-frontend"
 alias ms="cd ~/git/monetate-server"
+alias mc="cd ~/git/monetate-cm"
+alias mi="cd ~/git/monetate-io"
 alias dax="./frontend/bin/diff_active.py --user=jpalladino@monetate.com"
 alias diffactive=". ~/git/monetate-frontend/frontend/bin/diff_active.py"
 alias buildirx=". ~/bin/build-irx-scripts.sh"
