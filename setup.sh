@@ -54,6 +54,9 @@ install_xcode_clt () {
     success "XCode Command Line Tools Installed"
 }
 
+install_ohmyzsh () {
+    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+}
 
 # Install Homebrew package manager.
 install_homebrew () {
@@ -438,6 +441,7 @@ function setup_vim () {
 if [ $0 != $_ ]; then
     prereqs
     install_xcode_clt
+    install_ohmyzsh   
     install_homebrew
     install_kegs
     install_casks
